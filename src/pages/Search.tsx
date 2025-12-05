@@ -2,7 +2,7 @@ import { Link, useSearchParams } from "react-router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-type BookItem = {
+export type BookItem = {
     id: string;
     volumeInfo: {
         title: string;
