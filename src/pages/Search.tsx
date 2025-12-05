@@ -1,5 +1,6 @@
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 
 type BookItem = {
     id: string;
@@ -17,6 +18,27 @@ type BookItem = {
 type ApiResponse = {
     items: BookItem[];
 };
+
+const Wrapper = styled.div`
+    padding: 30px;
+`;
+
+const Item = styled(Link)`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: white;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+`;
+
+const Cover = styled.img`
+    width: 60px;
+    height: 90px;
+    border-radius: 4px;
+`;
 
 function Search() {
     // 해야되는 일 :
@@ -42,11 +64,28 @@ function Search() {
         fetch(`https://www.googleapis.com/books/v1/volumes?q=${keyword}&maxResults=20`)
             .then(response => response.json())
             .then((data: ApiResponse) => {
-                setList(data.items)
+                setList(data.items);
             });
     }, []);
 
-    return <>{keyword}</>;
+    return (
+        <Wrapper>
+            <h3>검색 결과: {keyword}</h3>
+            {list.map((item, index) => {
+                return (
+                    <Item to={`/detail/${item.id}`} key={index}>
+                        <Cover src={item.volumeInfo.imageLinks?.smallThumbnail || ""} />
+                        <div>
+                            <div>{item.volumeInfo.title}</div>
+                            <div style={{ fontSize: 12, color: "#555" }}>
+                                {item.volumeInfo.authors}
+                            </div>
+                        </div>
+                    </Item>
+                );
+            })}
+        </Wrapper>
+    );
 }
 
 export default Search;
